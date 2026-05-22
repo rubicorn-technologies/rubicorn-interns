@@ -29,22 +29,69 @@ export const listApplications = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context.userId);
-    const { data, error } = await supabaseAdmin
+    const { data: applications, error } = await supabaseAdmin
       .from("applications")
       .select("*, domains(name, slug)")
       .order("created_at", { ascending: false })
       .limit(500);
     if (error) throw new Error(error.message);
-    return { applications: data ?? [] };
+    const { data: domains, error: domainsError } = await supabaseAdmin
+      .from("domains")
+      .select("id, name, slug, sort_order")
+      .order("sort_order", { ascending: true });
+    if (domainsError) throw new Error(domainsError.message);
+    return { applications: applications ?? [], domains: domains ?? [] };
+  });
+
+export const updateApplication = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        full_name: z.string().min(1),
+        email: z.string().email(),
+        phone: z.string().min(1),
+        college: z.string().min(1),
+        degree: z.string().min(1),
+        year_of_study: z.string().min(1),
+        domain_id: z.string().uuid(),
+        mode: z.enum(["online", "hybrid", "offline"]),
+        payment_status: z.enum(["pending", "paid", "failed"]),
+        amount_inr: z.number().int().min(0),
+        intern_id: z.string().nullable(),
+        linkedin_url: z.string().nullable(),
+        github_url: z.string().nullable(),
+        motivation: z.string().nullable(),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.userId);
+    const { id, ...changes } = data;
+    const { data: updated, error } = await supabaseAdmin
+      .from("applications")
+      .update(changes)
+      .eq("id", id)
+      .select("*, domains(name, slug)")
+      .single();
+    if (error) throw new Error(error.message);
+    return { application: updated };
   });
 
 export const dashboardStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context.userId);
-    const { data: apps } = await supabaseAdmin
+    const { data: apps, error: appsError } = await supabaseAdmin
       .from("applications")
-      .select("payment_status, amount_inr, domain_id, domains(name)");
+      .select("payment_status, amount_inr, domain_id, created_at, domains(name)");
+    if (appsError) throw new Error(appsError.message);
+    const { data: domains, error: domainsError } = await supabaseAdmin
+      .from("domains")
+      .select("id, name, slug, sort_order")
+      .order("sort_order", { ascending: true });
+    if (domainsError) throw new Error(domainsError.message);
     const totals = {
       total: apps?.length ?? 0,
       paid: apps?.filter((a) => a.payment_status === "paid").length ?? 0,
@@ -55,15 +102,22 @@ export const dashboardStats = createServerFn({ method: "GET" })
           ?.filter((a) => a.payment_status === "paid")
           .reduce((s, a) => s + (a.amount_inr || 0), 0) ?? 0,
     };
-    const byDomainMap = new Map<string, { name: string; count: number; revenue: number }>();
+    const byDomainMap = new Map<
+      string,
+      { id: string; name: string; count: number; revenue: number }
+    >();
+    for (const d of domains ?? []) {
+      byDomainMap.set(d.id, { id: d.id, name: d.name, count: 0, revenue: 0 });
+    }
     for (const a of apps ?? []) {
       const name = (a.domains as { name?: string } | null)?.name ?? "Unknown";
-      const e = byDomainMap.get(name) ?? { name, count: 0, revenue: 0 };
+      const id = a.domain_id ?? name;
+      const e = byDomainMap.get(id) ?? { id, name, count: 0, revenue: 0 };
       e.count += 1;
       if (a.payment_status === "paid") e.revenue += a.amount_inr || 0;
-      byDomainMap.set(name, e);
+      byDomainMap.set(id, e);
     }
-    return { totals, byDomain: Array.from(byDomainMap.values()) };
+    return { totals, byDomain: Array.from(byDomainMap.values()), applications: apps ?? [] };
   });
 
 export const signResume = createServerFn({ method: "POST" })

@@ -5,9 +5,15 @@ export default async function handler(req, res) {
 
   try {
     const { admin } = await requireAdmin(req);
-    const { data: apps } = await admin
+    const { data: apps, error: appsError } = await admin
       .from("applications")
-      .select("payment_status, amount_inr, domain_id, domains(name)");
+      .select("payment_status, amount_inr, domain_id, created_at, domains(name)");
+    if (appsError) throw appsError;
+    const { data: domains, error: domainsError } = await admin
+      .from("domains")
+      .select("id, name, slug, sort_order")
+      .order("sort_order", { ascending: true });
+    if (domainsError) throw domainsError;
 
     const totals = {
       total: apps?.length ?? 0,
@@ -21,15 +27,24 @@ export default async function handler(req, res) {
     };
 
     const byDomainMap = new Map();
-    for (const app of apps ?? []) {
-      const name = app.domains?.name ?? "Unknown";
-      const entry = byDomainMap.get(name) ?? { name, count: 0, revenue: 0 };
-      entry.count += 1;
-      if (app.payment_status === "paid") entry.revenue += app.amount_inr || 0;
-      byDomainMap.set(name, entry);
+    for (const domain of domains ?? []) {
+      byDomainMap.set(domain.id, { id: domain.id, name: domain.name, count: 0, revenue: 0 });
     }
 
-    json(res, 200, { totals, byDomain: Array.from(byDomainMap.values()) });
+    for (const app of apps ?? []) {
+      const name = app.domains?.name ?? "Unknown";
+      const id = app.domain_id ?? name;
+      const entry = byDomainMap.get(id) ?? { id, name, count: 0, revenue: 0 };
+      entry.count += 1;
+      if (app.payment_status === "paid") entry.revenue += app.amount_inr || 0;
+      byDomainMap.set(id, entry);
+    }
+
+    json(res, 200, {
+      totals,
+      byDomain: Array.from(byDomainMap.values()),
+      applications: apps ?? [],
+    });
   } catch (error) {
     handleError(res, error);
   }
