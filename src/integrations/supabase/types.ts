@@ -14,16 +14,187 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      applications: {
+        Row: {
+          amount_inr: number
+          college: string
+          created_at: string
+          degree: string
+          domain_id: string
+          email: string
+          full_name: string
+          github_url: string | null
+          id: string
+          intern_id: string | null
+          linkedin_url: string | null
+          mode: Database["public"]["Enums"]["internship_mode"]
+          motivation: string | null
+          paid_at: string | null
+          payment_status: Database["public"]["Enums"]["payment_status"]
+          phone: string
+          razorpay_order_id: string | null
+          razorpay_payment_id: string | null
+          razorpay_signature: string | null
+          resume_path: string | null
+          updated_at: string
+          year_of_study: string
+        }
+        Insert: {
+          amount_inr?: number
+          college: string
+          created_at?: string
+          degree: string
+          domain_id: string
+          email: string
+          full_name: string
+          github_url?: string | null
+          id?: string
+          intern_id?: string | null
+          linkedin_url?: string | null
+          mode: Database["public"]["Enums"]["internship_mode"]
+          motivation?: string | null
+          paid_at?: string | null
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          phone: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          razorpay_signature?: string | null
+          resume_path?: string | null
+          updated_at?: string
+          year_of_study: string
+        }
+        Update: {
+          amount_inr?: number
+          college?: string
+          created_at?: string
+          degree?: string
+          domain_id?: string
+          email?: string
+          full_name?: string
+          github_url?: string | null
+          id?: string
+          intern_id?: string | null
+          linkedin_url?: string | null
+          mode?: Database["public"]["Enums"]["internship_mode"]
+          motivation?: string | null
+          paid_at?: string | null
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          phone?: string
+          razorpay_order_id?: string | null
+          razorpay_payment_id?: string | null
+          razorpay_signature?: string | null
+          resume_path?: string | null
+          updated_at?: string
+          year_of_study?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applications_domain_id_fkey"
+            columns: ["domain_id"]
+            isOneToOne: false
+            referencedRelation: "domains"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      domains: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          price_inr: number
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          price_inr?: number
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          price_inr?: number
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
+      internship_mode: "online" | "hybrid" | "offline"
+      payment_status: "pending" | "paid" | "failed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +321,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+      internship_mode: ["online", "hybrid", "offline"],
+      payment_status: ["pending", "paid", "failed"],
+    },
   },
 } as const
