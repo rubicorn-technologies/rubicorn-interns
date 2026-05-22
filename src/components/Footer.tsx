@@ -14,26 +14,66 @@ export function Footer() {
         <div>
           <p className="font-display text-sm font-semibold">Quick Links</p>
           <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-            <li><a href="/#programs" className="hover:text-foreground">Programs</a></li>
-            <li><a href="/#process" className="hover:text-foreground">Process</a></li>
-            <li><a href="/#faq" className="hover:text-foreground">FAQ</a></li>
-            <li><a href="/#contact" className="hover:text-foreground">Contact</a></li>
+            <li>
+              <a href="/#programs" className="hover:text-foreground">
+                Programs
+              </a>
+            </li>
+            <li>
+              <a href="/#process" className="hover:text-foreground">
+                Process
+              </a>
+            </li>
+            <li>
+              <a href="/#faq" className="hover:text-foreground">
+                FAQ
+              </a>
+            </li>
+            <li>
+              <a href="/#contact" className="hover:text-foreground">
+                Contact
+              </a>
+            </li>
           </ul>
         </div>
         <div>
           <p className="font-display text-sm font-semibold">Policies</p>
           <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-            <li><Link to="/privacy" className="hover:text-foreground">Privacy Policy</Link></li>
-            <li><Link to="/terms" className="hover:text-foreground">Terms & Conditions</Link></li>
-            <li><Link to="/refund" className="hover:text-foreground">Refund Policy</Link></li>
-            <li><Link to="/login" className="hover:text-foreground">Admin Login</Link></li>
+            <li>
+              <Link to="/privacy" className="hover:text-foreground">
+                Privacy Policy
+              </Link>
+            </li>
+            <li>
+              <Link to="/terms" className="hover:text-foreground">
+                Terms & Conditions
+              </Link>
+            </li>
+            <li>
+              <Link to="/refund" className="hover:text-foreground">
+                Refund Policy
+              </Link>
+            </li>
+            <li>
+              <Link to="/login" className="hover:text-foreground">
+                Admin Login
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
           <p className="font-display text-sm font-semibold">Contact</p>
           <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-            <li><a href="mailto:admin@rubicorn.in" className="hover:text-foreground">admin@rubicorn.in</a></li>
-            <li><a href="tel:+918978943122" className="hover:text-foreground">+91 89789 43122</a></li>
+            <li>
+              <a href="mailto:admin@rubicorn.in" className="hover:text-foreground">
+                admin@rubicorn.in
+              </a>
+            </li>
+            <li>
+              <a href="tel:+918978943122" className="hover:text-foreground">
+                +91 89789 43122
+              </a>
+            </li>
           </ul>
         </div>
       </div>

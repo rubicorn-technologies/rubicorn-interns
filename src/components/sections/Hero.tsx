@@ -2,7 +2,14 @@ import { Button } from "@/components/ui/button";
 import { BlurOrbs } from "../BlurOrbs";
 import { ArrowRight, Sparkles } from "lucide-react";
 
-const domains = ["Web Development", "Python", "AI Engineer", "Prompt Engineer", "Data Science", "Cybersecurity"];
+const domains = [
+  "Web Development",
+  "Python",
+  "AI Engineer",
+  "Prompt Engineer",
+  "Data Science",
+  "Cybersecurity",
+];
 
 export function Hero({ onApply }: { onApply: () => void }) {
   return (
@@ -24,8 +31,8 @@ export function Hero({ onApply }: { onApply: () => void }) {
         </h1>
 
         <p className="reveal mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
-          The internship is <span className="text-foreground">free</span>. Pay only for
-          the industry training that gets you there — mentorship, capstone projects, certificates, LOR and
+          The internship is <span className="text-foreground">free</span>. Pay only for the industry
+          training that gets you there — mentorship, capstone projects, certificates, LOR and
           performance-based stipend opportunities.
         </p>
 

@@ -18,7 +18,11 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Rubicorn Internships — Apply for AI, Web, Data Science internships in India" },
-      { name: "description", content: "Internship is free. Pay only for the industry training. AICTE-recognized, MSME-registered. Apply online today." },
+      {
+        name: "description",
+        content:
+          "Internship is free. Pay only for the industry training. AICTE-recognized, MSME-registered. Apply online today.",
+      },
       { property: "og:url", content: "/" },
     ],
     links: [{ rel: "canonical", href: "/" }],

@@ -1,7 +1,6 @@
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
-import { createHmac } from "crypto";
+import { randomUUID } from "node:crypto";
+import { handleError, json, readJson, supabaseAdmin, env } from "./_utils.js";
 
 const ApplicationInput = z.object({
   full_name: z.string().min(1).max(120),
@@ -19,10 +18,14 @@ const ApplicationInput = z.object({
   resume_filename: z.string().max(200).optional(),
 });
 
-export const createOrder = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => ApplicationInput.parse(d))
-  .handler(async ({ data }) => {
-    const { data: domain, error: domErr } = await supabaseAdmin
+export default async function handler(req, res) {
+  if (req.method !== "POST") return json(res, 405, { error: "Method not allowed" });
+
+  try {
+    const data = ApplicationInput.parse(await readJson(req));
+    const supabase = supabaseAdmin();
+
+    const { data: domain, error: domErr } = await supabase
       .from("domains")
       .select("id, price_inr, name")
       .eq("slug", data.domain_slug)
@@ -30,12 +33,12 @@ export const createOrder = createServerFn({ method: "POST" })
       .maybeSingle();
     if (domErr || !domain) throw new Error("Selected domain not available");
 
-    let resume_path: string | null = null;
+    let resume_path = null;
     if (data.resume_base64 && data.resume_filename) {
       const buf = Buffer.from(data.resume_base64.split(",").pop() ?? "", "base64");
       const safe = data.resume_filename.replace(/[^\w.-]/g, "_");
-      const path = `applications/${crypto.randomUUID()}-${safe}`;
-      const { error: upErr } = await supabaseAdmin.storage.from("resumes").upload(path, buf, {
+      const path = `applications/${randomUUID()}-${safe}`;
+      const { error: upErr } = await supabase.storage.from("resumes").upload(path, buf, {
         contentType: "application/pdf",
         upsert: false,
       });
@@ -43,7 +46,7 @@ export const createOrder = createServerFn({ method: "POST" })
       else resume_path = path;
     }
 
-    const { data: app, error: insErr } = await supabaseAdmin
+    const { data: app, error: insErr } = await supabase
       .from("applications")
       .insert({
         full_name: data.full_name,
@@ -65,13 +68,12 @@ export const createOrder = createServerFn({ method: "POST" })
       .single();
     if (insErr || !app) throw new Error("Could not save application");
 
-    const keyId = process.env.RAZORPAY_KEY_ID!;
-    const keySecret = process.env.RAZORPAY_KEY_SECRET!;
-    const auth = Buffer.from(`${keyId}:${keySecret}`).toString("base64");
+    const keyId = env("RAZORPAY_KEY_ID");
+    const keySecret = env("RAZORPAY_KEY_SECRET");
     const orderRes = await fetch("https://api.razorpay.com/v1/orders", {
       method: "POST",
       headers: {
-        Authorization: `Basic ${auth}`,
+        Authorization: `Basic ${Buffer.from(`${keyId}:${keySecret}`).toString("base64")}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -81,59 +83,23 @@ export const createOrder = createServerFn({ method: "POST" })
         notes: { application_id: app.id, domain: domain.name },
       }),
     });
+
     if (!orderRes.ok) {
-      const txt = await orderRes.text();
-      console.error("Razorpay order failed", txt);
+      console.error("Razorpay order failed", await orderRes.text());
       throw new Error("Could not create payment order");
     }
-    const order = (await orderRes.json()) as { id: string; amount: number };
 
-    await supabaseAdmin
-      .from("applications")
-      .update({ razorpay_order_id: order.id })
-      .eq("id", app.id);
+    const order = await orderRes.json();
+    await supabase.from("applications").update({ razorpay_order_id: order.id }).eq("id", app.id);
 
-    return {
+    json(res, 200, {
       applicationId: app.id,
       orderId: order.id,
       amount: order.amount,
       keyId,
       domainName: domain.name,
-    };
-  });
-
-const VerifyInput = z.object({
-  applicationId: z.string().uuid(),
-  razorpay_order_id: z.string(),
-  razorpay_payment_id: z.string(),
-  razorpay_signature: z.string(),
-});
-
-export const verifyPayment = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => VerifyInput.parse(d))
-  .handler(async ({ data }) => {
-    const expected = createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
-      .update(`${data.razorpay_order_id}|${data.razorpay_payment_id}`)
-      .digest("hex");
-    if (expected !== data.razorpay_signature) {
-      await supabaseAdmin
-        .from("applications")
-        .update({ payment_status: "failed" })
-        .eq("id", data.applicationId);
-      throw new Error("Payment signature verification failed");
-    }
-
-    const { data: updated, error } = await supabaseAdmin
-      .from("applications")
-      .update({
-        payment_status: "paid",
-        razorpay_payment_id: data.razorpay_payment_id,
-        razorpay_signature: data.razorpay_signature,
-      })
-      .eq("id", data.applicationId)
-      .select("intern_id, full_name, email")
-      .single();
-    if (error || !updated) throw new Error("Failed to update application");
-
-    return { intern_id: updated.intern_id, email: updated.email, name: updated.full_name };
-  });
+    });
+  } catch (error) {
+    handleError(res, error);
+  }
+}

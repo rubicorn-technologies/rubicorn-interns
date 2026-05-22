@@ -1,12 +1,42 @@
 import { Code2, Brain, MessageSquare, Cpu, BarChart3, Shield } from "lucide-react";
 
 const domains = [
-  { slug: "web-dev", name: "Web Development", icon: Code2, blurb: "React, Node, APIs, deployments." },
-  { slug: "python", name: "Python Development", icon: Cpu, blurb: "Backend, automation, scripting." },
-  { slug: "ai-engineer", name: "AI Engineer", icon: Brain, blurb: "LLMs, RAG, vector search, evals." },
-  { slug: "prompt-engineer", name: "Prompt Engineer", icon: MessageSquare, blurb: "Prompt design, evals, tooling." },
-  { slug: "data-science", name: "Data Science", icon: BarChart3, blurb: "Pandas, SQL, Power BI, projects." },
-  { slug: "cybersecurity", name: "Cybersecurity", icon: Shield, blurb: "Kali Linux, network, ethical hacking." },
+  {
+    slug: "web-dev",
+    name: "Web Development",
+    icon: Code2,
+    blurb: "React, Node, APIs, deployments.",
+  },
+  {
+    slug: "python",
+    name: "Python Development",
+    icon: Cpu,
+    blurb: "Backend, automation, scripting.",
+  },
+  {
+    slug: "ai-engineer",
+    name: "AI Engineer",
+    icon: Brain,
+    blurb: "LLMs, RAG, vector search, evals.",
+  },
+  {
+    slug: "prompt-engineer",
+    name: "Prompt Engineer",
+    icon: MessageSquare,
+    blurb: "Prompt design, evals, tooling.",
+  },
+  {
+    slug: "data-science",
+    name: "Data Science",
+    icon: BarChart3,
+    blurb: "Pandas, SQL, Power BI, projects.",
+  },
+  {
+    slug: "cybersecurity",
+    name: "Cybersecurity",
+    icon: Shield,
+    blurb: "Kali Linux, network, ethical hacking.",
+  },
 ];
 
 export function Domains({ onApply }: { onApply: (slug?: string) => void }) {
@@ -15,9 +45,12 @@ export function Domains({ onApply }: { onApply: (slug?: string) => void }) {
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="reveal mx-auto max-w-2xl text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Programs</p>
-          <h2 className="mt-3 font-display text-3xl font-bold md:text-5xl">Pick your internship domain</h2>
+          <h2 className="mt-3 font-display text-3xl font-bold md:text-5xl">
+            Pick your internship domain
+          </h2>
           <p className="mt-4 text-muted-foreground">
-            Six tracks across the most in-demand skills in 2026. All include mentorship, capstones, and certification.
+            Six tracks across the most in-demand skills in 2026. All include mentorship, capstones,
+            and certification.
           </p>
         </div>
 

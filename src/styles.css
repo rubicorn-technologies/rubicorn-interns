@@ -100,9 +100,10 @@
 
   /* design tokens */
   --gradient-primary: linear-gradient(135deg, oklch(0.74 0.13 200) 0%, oklch(0.55 0.16 260) 100%);
-  --gradient-hero: radial-gradient(80% 60% at 20% 10%, oklch(0.74 0.13 200 / 25%), transparent 60%),
-                   radial-gradient(70% 60% at 80% 30%, oklch(0.55 0.18 260 / 25%), transparent 60%),
-                   radial-gradient(60% 50% at 50% 100%, oklch(0.7 0.18 320 / 18%), transparent 60%);
+  --gradient-hero:
+    radial-gradient(80% 60% at 20% 10%, oklch(0.74 0.13 200 / 25%), transparent 60%),
+    radial-gradient(70% 60% at 80% 30%, oklch(0.55 0.18 260 / 25%), transparent 60%),
+    radial-gradient(60% 50% at 50% 100%, oklch(0.7 0.18 320 / 18%), transparent 60%);
   --glass-bg: oklch(1 0 0 / 4%);
   --glass-border: oklch(1 0 0 / 10%);
   --shadow-glow: 0 10px 40px -10px oklch(0.74 0.13 200 / 45%);
@@ -129,7 +130,10 @@
     background-attachment: fixed;
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
   }
@@ -154,10 +158,18 @@
     background-clip: text;
     color: transparent;
   }
-  .bg-gradient-primary { background-image: var(--gradient-primary); }
-  .bg-hero { background-image: var(--gradient-hero); }
-  .shadow-glow { box-shadow: var(--shadow-glow); }
-  .shadow-elevated { box-shadow: var(--shadow-elevated); }
+  .bg-gradient-primary {
+    background-image: var(--gradient-primary);
+  }
+  .bg-hero {
+    background-image: var(--gradient-hero);
+  }
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
 
   .grid-overlay {
     background-image:
@@ -170,7 +182,9 @@
   .reveal {
     opacity: 0;
     transform: translateY(24px);
-    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+    transition:
+      opacity 0.7s ease,
+      transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
   }
   .reveal.in-view {
     opacity: 1;
@@ -178,7 +192,10 @@
   }
 
   .hover-lift {
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease,
+      border-color 0.3s ease;
   }
   .hover-lift:hover {
     transform: translateY(-4px);
@@ -190,13 +207,22 @@
     animation: marquee 30s linear infinite;
   }
   @keyframes marquee {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
   }
 
   @keyframes float-orb {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(40px, -40px) scale(1.1); }
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(40px, -40px) scale(1.1);
+    }
   }
   .orb {
     position: absolute;
@@ -207,8 +233,13 @@
   }
 
   @keyframes gradient-shift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
+    0%,
+    100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
   }
   .animated-gradient {
     background-size: 200% 200%;

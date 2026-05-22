@@ -48,7 +48,10 @@ export function Navbar({ onApply }: { onApply: () => void }) {
         </ul>
 
         <div className="hidden md:block">
-          <Button onClick={onApply} className="bg-gradient-primary text-primary-foreground shadow-glow hover:opacity-95">
+          <Button
+            onClick={onApply}
+            className="bg-gradient-primary text-primary-foreground shadow-glow hover:opacity-95"
+          >
             Apply Now
           </Button>
         </div>

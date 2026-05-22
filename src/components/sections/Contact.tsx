@@ -6,16 +6,25 @@ export function Contact() {
       <div className="mx-auto grid max-w-6xl gap-8 px-5 lg:grid-cols-2 lg:px-8">
         <div className="reveal">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">Contact</p>
-          <h2 className="mt-3 font-display text-3xl font-bold md:text-5xl">Talk to the Rubicorn team.</h2>
+          <h2 className="mt-3 font-display text-3xl font-bold md:text-5xl">
+            Talk to the Rubicorn team.
+          </h2>
           <p className="mt-4 text-muted-foreground">
-            Have a question about programs, payments, or partnerships? We respond within one working day.
+            Have a question about programs, payments, or partnerships? We respond within one working
+            day.
           </p>
 
           <div className="mt-8 space-y-3">
-            <a href="mailto:admin@rubicorn.in" className="glass hover-lift flex items-center gap-3 rounded-xl p-4 text-sm">
+            <a
+              href="mailto:admin@rubicorn.in"
+              className="glass hover-lift flex items-center gap-3 rounded-xl p-4 text-sm"
+            >
               <Mail className="h-4 w-4 text-primary" /> admin@rubicorn.in
             </a>
-            <a href="tel:+918978943122" className="glass hover-lift flex items-center gap-3 rounded-xl p-4 text-sm">
+            <a
+              href="tel:+918978943122"
+              className="glass hover-lift flex items-center gap-3 rounded-xl p-4 text-sm"
+            >
               <Phone className="h-4 w-4 text-primary" /> +91 89789 43122
             </a>
           </div>
@@ -42,10 +51,23 @@ export function Contact() {
           }}
         >
           <div className="grid gap-4 sm:grid-cols-2">
-            <input className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm outline-none ring-primary/60 focus:ring" placeholder="Full name" required />
-            <input className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm outline-none ring-primary/60 focus:ring" placeholder="Email" type="email" required />
+            <input
+              className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm outline-none ring-primary/60 focus:ring"
+              placeholder="Full name"
+              required
+            />
+            <input
+              className="rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm outline-none ring-primary/60 focus:ring"
+              placeholder="Email"
+              type="email"
+              required
+            />
           </div>
-          <input className="mt-4 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm outline-none ring-primary/60 focus:ring" placeholder="Subject" required />
+          <input
+            className="mt-4 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm outline-none ring-primary/60 focus:ring"
+            placeholder="Subject"
+            required
+          />
           <textarea
             className="mt-4 min-h-32 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2.5 text-sm outline-none ring-primary/60 focus:ring"
             placeholder="Your message"

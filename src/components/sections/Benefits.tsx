@@ -1,4 +1,14 @@
-import { Briefcase, Users, GraduationCap, FileBadge, FileCheck, FileSignature, Wallet, ShieldCheck, BadgeCheck } from "lucide-react";
+import {
+  Briefcase,
+  Users,
+  GraduationCap,
+  FileBadge,
+  FileCheck,
+  FileSignature,
+  Wallet,
+  ShieldCheck,
+  BadgeCheck,
+} from "lucide-react";
 
 const benefits = [
   { icon: Briefcase, title: "Real Industry Projects" },
@@ -23,7 +33,10 @@ export function Benefits() {
 
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {benefits.map(({ icon: Icon, title }) => (
-            <div key={title} className="reveal glass hover-lift flex items-center gap-4 rounded-2xl p-5">
+            <div
+              key={title}
+              className="reveal glass hover-lift flex items-center gap-4 rounded-2xl p-5"
+            >
               <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-primary text-primary-foreground shadow-glow">
                 <Icon className="h-5 w-5" />
               </span>

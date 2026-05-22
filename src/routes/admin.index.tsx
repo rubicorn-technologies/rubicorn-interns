@@ -3,15 +3,22 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
 import { dashboardStats } from "@/lib/admin.functions";
 import { Users, IndianRupee, CheckCircle2, Clock } from "lucide-react";
+import { getAdminJson } from "@/lib/admin-api";
 
 export const Route = createFileRoute("/admin/")({
   component: Overview,
-  head: () => ({ meta: [{ title: "Admin Overview — Rubicorn" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({
+    meta: [{ title: "Admin Overview — Rubicorn" }, { name: "robots", content: "noindex" }],
+  }),
 });
 
 function Overview() {
   const fn = useServerFn(dashboardStats);
-  const { data } = useQuery({ queryKey: ["stats"], queryFn: () => fn() });
+  const { data } = useQuery({
+    queryKey: ["stats"],
+    queryFn: async () =>
+      (await getAdminJson<Awaited<ReturnType<typeof fn>>>("/api/admin/stats")) ?? fn(),
+  });
   const t = data?.totals;
   const cards = [
     { label: "Total Applicants", value: t?.total ?? 0, icon: Users },
@@ -40,7 +47,10 @@ function Overview() {
         <h2 className="font-display text-lg font-semibold">Revenue by Domain</h2>
         <div className="mt-4 space-y-3">
           {data?.byDomain.map((d) => (
-            <div key={d.name} className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm">
+            <div
+              key={d.name}
+              className="flex items-center justify-between rounded-lg border border-white/10 bg-white/5 px-4 py-3 text-sm"
+            >
               <span>{d.name}</span>
               <span className="flex gap-4 text-muted-foreground">
                 <span>{d.count} applicants</span>

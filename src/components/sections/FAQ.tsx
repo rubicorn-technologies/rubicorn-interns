@@ -1,13 +1,36 @@
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const items = [
-  { q: "Is the internship free?", a: "Yes. The internship participation is free. The fee is charged only for industry-focused training and mentorship." },
-  { q: "Will I receive a certificate?", a: "Yes. Eligible interns receive internship certificates and training completion certificates." },
-  { q: "Is this internship online?", a: "Internships are available in Online, Hybrid, and Offline modes depending on availability." },
-  { q: "Will I get a stipend?", a: "Top-performing interns may receive performance-based stipend opportunities after successful completion." },
-  { q: "How long does the internship last?", a: "Typically 6 weeks depending on the selected domain." },
+  {
+    q: "Is the internship free?",
+    a: "Yes. The internship participation is free. The fee is charged only for industry-focused training and mentorship.",
+  },
+  {
+    q: "Will I receive a certificate?",
+    a: "Yes. Eligible interns receive internship certificates and training completion certificates.",
+  },
+  {
+    q: "Is this internship online?",
+    a: "Internships are available in Online, Hybrid, and Offline modes depending on availability.",
+  },
+  {
+    q: "Will I get a stipend?",
+    a: "Top-performing interns may receive performance-based stipend opportunities after successful completion.",
+  },
+  {
+    q: "How long does the internship last?",
+    a: "Typically 6 weeks depending on the selected domain.",
+  },
   { q: "Do I need prior experience?", a: "No. Beginner-friendly guidance is included." },
-  { q: "When will I receive my offer letter?", a: "Within 1 working day after successful verification." },
+  {
+    q: "When will I receive my offer letter?",
+    a: "Within 1 working day after successful verification.",
+  },
   { q: "Are projects included?", a: "Yes. Both mini and major capstone projects are included." },
 ];
 

@@ -28,13 +28,16 @@ export function About() {
     <section className="relative py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="reveal mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">About Rubicorn Internships</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">
+            About Rubicorn Internships
+          </p>
           <h2 className="mt-3 font-display text-3xl font-bold md:text-5xl">
             An internship ecosystem, not a course.
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Rubicorn Technologies runs a training-first internship program. The internship participation is free —
-            the fee is exclusively for the industry-focused training that prepares you for it.
+            Rubicorn Technologies runs a training-first internship program. The internship
+            participation is free — the fee is exclusively for the industry-focused training that
+            prepares you for it.
           </p>
         </div>
 

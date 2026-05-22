@@ -4,13 +4,15 @@ import { checkAdmin } from "@/lib/admin.functions";
 import { Logo } from "@/components/Logo";
 import { LayoutDashboard, Users, CreditCard, FileBadge, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getAdminJson } from "@/lib/admin-api";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async () => {
     const { data } = await supabase.auth.getUser();
     if (!data.user) throw redirect({ to: "/login" });
     try {
-      const res = await checkAdmin();
+      const res =
+        (await getAdminJson<{ isAdmin: boolean }>("/api/admin/check")) ?? (await checkAdmin());
       if (!res.isAdmin) throw redirect({ to: "/login" });
     } catch {
       throw redirect({ to: "/login" });
