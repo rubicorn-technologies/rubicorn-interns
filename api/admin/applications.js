@@ -11,8 +11,13 @@ export default async function handler(req, res) {
       .order("created_at", { ascending: false })
       .limit(500);
     if (error) throw new Error(error.message);
+    const { data: domains, error: domainsError } = await admin
+      .from("domains")
+      .select("id, name, slug, sort_order")
+      .order("sort_order", { ascending: true });
+    if (domainsError) throw domainsError;
 
-    json(res, 200, { applications: data ?? [] });
+    json(res, 200, { applications: data ?? [], domains: domains ?? [] });
   } catch (error) {
     handleError(res, error);
   }

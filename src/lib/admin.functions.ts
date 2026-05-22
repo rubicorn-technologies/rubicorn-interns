@@ -79,27 +79,59 @@ export const updateApplication = createServerFn({ method: "POST" })
     return { application: updated };
   });
 
+export const deleteApplication = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.userId);
+    const { data: updated, error } = await supabaseAdmin
+      .from("applications")
+      .update({ deleted_at: new Date().toISOString(), deleted_by: context.userId })
+      .eq("id", data.id)
+      .is("deleted_at", null)
+      .select("id, deleted_at")
+      .single();
+    if (error) throw new Error(error.message);
+    return { application: updated };
+  });
+
+export const restoreApplication = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.userId);
+    const { data: updated, error } = await supabaseAdmin
+      .from("applications")
+      .update({ deleted_at: null, deleted_by: null })
+      .eq("id", data.id)
+      .select("id, deleted_at")
+      .single();
+    if (error) throw new Error(error.message);
+    return { application: updated };
+  });
+
 export const dashboardStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     await assertAdmin(context.userId);
     const { data: apps, error: appsError } = await supabaseAdmin
       .from("applications")
-      .select("payment_status, amount_inr, domain_id, created_at, domains(name)");
+      .select("payment_status, amount_inr, domain_id, created_at, deleted_at, domains(name)");
     if (appsError) throw new Error(appsError.message);
+    const activeApps = (apps ?? []).filter((app) => !app.deleted_at);
     const { data: domains, error: domainsError } = await supabaseAdmin
       .from("domains")
       .select("id, name, slug, sort_order")
       .order("sort_order", { ascending: true });
     if (domainsError) throw new Error(domainsError.message);
     const totals = {
-      total: apps?.length ?? 0,
-      paid: apps?.filter((a) => a.payment_status === "paid").length ?? 0,
-      pending: apps?.filter((a) => a.payment_status === "pending").length ?? 0,
-      failed: apps?.filter((a) => a.payment_status === "failed").length ?? 0,
+      total: activeApps.length,
+      paid: activeApps.filter((a) => a.payment_status === "paid").length,
+      pending: activeApps.filter((a) => a.payment_status === "pending").length,
+      failed: activeApps.filter((a) => a.payment_status === "failed").length,
       revenue:
-        apps
-          ?.filter((a) => a.payment_status === "paid")
+        activeApps
+          .filter((a) => a.payment_status === "paid")
           .reduce((s, a) => s + (a.amount_inr || 0), 0) ?? 0,
     };
     const byDomainMap = new Map<
@@ -109,7 +141,7 @@ export const dashboardStats = createServerFn({ method: "GET" })
     for (const d of domains ?? []) {
       byDomainMap.set(d.id, { id: d.id, name: d.name, count: 0, revenue: 0 });
     }
-    for (const a of apps ?? []) {
+    for (const a of activeApps) {
       const name = (a.domains as { name?: string } | null)?.name ?? "Unknown";
       const id = a.domain_id ?? name;
       const e = byDomainMap.get(id) ?? { id, name, count: 0, revenue: 0 };
@@ -117,7 +149,7 @@ export const dashboardStats = createServerFn({ method: "GET" })
       if (a.payment_status === "paid") e.revenue += a.amount_inr || 0;
       byDomainMap.set(id, e);
     }
-    return { totals, byDomain: Array.from(byDomainMap.values()), applications: apps ?? [] };
+    return { totals, byDomain: Array.from(byDomainMap.values()), applications: activeApps };
   });
 
 export const signResume = createServerFn({ method: "POST" })

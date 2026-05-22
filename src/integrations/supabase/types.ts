@@ -13,6 +13,8 @@ export type Database = {
           amount_inr: number;
           college: string;
           created_at: string;
+          deleted_at: string | null;
+          deleted_by: string | null;
           degree: string;
           domain_id: string;
           email: string;
@@ -37,6 +39,8 @@ export type Database = {
           amount_inr?: number;
           college: string;
           created_at?: string;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           degree: string;
           domain_id: string;
           email: string;
@@ -61,6 +65,8 @@ export type Database = {
           amount_inr?: number;
           college?: string;
           created_at?: string;
+          deleted_at?: string | null;
+          deleted_by?: string | null;
           degree?: string;
           domain_id?: string;
           email?: string;

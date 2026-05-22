@@ -24,12 +24,12 @@ import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 const DOMAINS = [
-  { slug: "web-dev", name: "Web Development" },
-  { slug: "python", name: "Python Development" },
-  { slug: "ai-engineer", name: "AI Engineer" },
-  { slug: "prompt-engineer", name: "Prompt Engineer" },
-  { slug: "data-science", name: "Data Science" },
-  { slug: "cybersecurity", name: "Cybersecurity" },
+  { slug: "web-dev", name: "Web Development", price: 1499 },
+  { slug: "python", name: "Python Development", price: 3499 },
+  { slug: "ai-engineer", name: "AI Engineer", price: 9999 },
+  { slug: "prompt-engineer", name: "Prompt Engineer", price: 6999 },
+  { slug: "data-science", name: "Data Science", price: 3999 },
+  { slug: "cybersecurity", name: "Cybersecurity", price: 1499 },
 ];
 
 declare global {
@@ -97,6 +97,7 @@ export function ApplyModal({
   const [domain, setDomain] = useState<string>(presetDomain || "web-dev");
   const [mode, setMode] = useState<"online" | "hybrid" | "offline">("online");
   const [resume, setResume] = useState<File | null>(null);
+  const selectedDomain = DOMAINS.find((item) => item.slug === domain) ?? DOMAINS[0];
 
   useEffect(() => {
     if (presetDomain) setDomain(presetDomain);
@@ -216,11 +217,14 @@ export function ApplyModal({
                 <SelectContent>
                   {DOMAINS.map((d) => (
                     <SelectItem key={d.slug} value={d.slug}>
-                      {d.name}
+                      {d.name} - INR {d.price.toLocaleString("en-IN")}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              <p className="mt-1.5 text-xs text-muted-foreground">
+                Training fee: INR {selectedDomain.price.toLocaleString("en-IN")}
+              </p>
             </div>
             <div>
               <Label>Mode</Label>

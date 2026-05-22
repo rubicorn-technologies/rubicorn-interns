@@ -7,8 +7,9 @@ export default async function handler(req, res) {
     const { admin } = await requireAdmin(req);
     const { data: apps, error: appsError } = await admin
       .from("applications")
-      .select("payment_status, amount_inr, domain_id, created_at, domains(name)");
+      .select("payment_status, amount_inr, domain_id, created_at, deleted_at, domains(name)");
     if (appsError) throw appsError;
+    const activeApps = (apps ?? []).filter((app) => !app.deleted_at);
     const { data: domains, error: domainsError } = await admin
       .from("domains")
       .select("id, name, slug, sort_order")
@@ -16,13 +17,13 @@ export default async function handler(req, res) {
     if (domainsError) throw domainsError;
 
     const totals = {
-      total: apps?.length ?? 0,
-      paid: apps?.filter((a) => a.payment_status === "paid").length ?? 0,
-      pending: apps?.filter((a) => a.payment_status === "pending").length ?? 0,
-      failed: apps?.filter((a) => a.payment_status === "failed").length ?? 0,
+      total: activeApps.length,
+      paid: activeApps.filter((a) => a.payment_status === "paid").length,
+      pending: activeApps.filter((a) => a.payment_status === "pending").length,
+      failed: activeApps.filter((a) => a.payment_status === "failed").length,
       revenue:
-        apps
-          ?.filter((a) => a.payment_status === "paid")
+        activeApps
+          .filter((a) => a.payment_status === "paid")
           .reduce((s, a) => s + (a.amount_inr || 0), 0) ?? 0,
     };
 
@@ -31,7 +32,7 @@ export default async function handler(req, res) {
       byDomainMap.set(domain.id, { id: domain.id, name: domain.name, count: 0, revenue: 0 });
     }
 
-    for (const app of apps ?? []) {
+    for (const app of activeApps) {
       const name = app.domains?.name ?? "Unknown";
       const id = app.domain_id ?? name;
       const entry = byDomainMap.get(id) ?? { id, name, count: 0, revenue: 0 };
@@ -43,7 +44,7 @@ export default async function handler(req, res) {
     json(res, 200, {
       totals,
       byDomain: Array.from(byDomainMap.values()),
-      applications: apps ?? [],
+      applications: activeApps,
     });
   } catch (error) {
     handleError(res, error);

@@ -6,36 +6,42 @@ const domains = [
     name: "Web Development",
     icon: Code2,
     blurb: "React, Node, APIs, deployments.",
+    price: 1499,
   },
   {
     slug: "python",
     name: "Python Development",
     icon: Cpu,
     blurb: "Backend, automation, scripting.",
+    price: 3499,
   },
   {
     slug: "ai-engineer",
     name: "AI Engineer",
     icon: Brain,
     blurb: "LLMs, RAG, vector search, evals.",
+    price: 9999,
   },
   {
     slug: "prompt-engineer",
     name: "Prompt Engineer",
     icon: MessageSquare,
     blurb: "Prompt design, evals, tooling.",
+    price: 6999,
   },
   {
     slug: "data-science",
     name: "Data Science",
     icon: BarChart3,
     blurb: "Pandas, SQL, Power BI, projects.",
+    price: 3999,
   },
   {
     slug: "cybersecurity",
     name: "Cybersecurity",
     icon: Shield,
     blurb: "Kali Linux, network, ethical hacking.",
+    price: 1499,
   },
 ];
 
@@ -55,7 +61,7 @@ export function Domains({ onApply }: { onApply: (slug?: string) => void }) {
         </div>
 
         <div className="mt-14 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {domains.map(({ slug, name, icon: Icon, blurb }) => (
+          {domains.map(({ slug, name, icon: Icon, blurb, price }) => (
             <button
               key={slug}
               onClick={() => onApply(slug)}
@@ -70,6 +76,9 @@ export function Domains({ onApply }: { onApply: (slug?: string) => void }) {
               </div>
               <h3 className="mt-5 font-display text-xl font-semibold">{name}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{blurb}</p>
+              <p className="mt-4 font-display text-2xl font-bold">
+                INR {price.toLocaleString("en-IN")}
+              </p>
               <span className="mt-5 inline-flex text-sm font-medium text-primary transition-transform group-hover:translate-x-0.5">
                 Apply for this →
               </span>

@@ -2,9 +2,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Download, FileText, Pencil } from "lucide-react";
+import { Download, FileText, Pencil, RotateCcw, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { listApplications, signResume, updateApplication } from "@/lib/admin.functions";
+import {
+  deleteApplication,
+  listApplications,
+  restoreApplication,
+  signResume,
+  updateApplication,
+} from "@/lib/admin.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,6 +59,8 @@ type App = {
   payment_status: "pending" | "paid" | "failed";
   amount_inr: number;
   created_at: string;
+  deleted_at: string | null;
+  deleted_by: string | null;
   updated_at: string;
   paid_at: string | null;
   linkedin_url: string | null;
@@ -113,11 +121,14 @@ function Applicants() {
   const list = useServerFn(listApplications);
   const sign = useServerFn(signResume);
   const update = useServerFn(updateApplication);
+  const remove = useServerFn(deleteApplication);
+  const restore = useServerFn(restoreApplication);
   const queryClient = useQueryClient();
   const [q, setQ] = useState("");
   const [domainId, setDomainId] = useState("all");
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
+  const [section, setSection] = useState<"active" | "deleted">("active");
   const [editing, setEditing] = useState<EditForm | null>(null);
 
   const { data, isLoading } = useQuery({
@@ -154,12 +165,13 @@ function Applicants() {
         .toLowerCase();
       return (
         (!search || searchable.includes(search)) &&
+        (section === "deleted" ? !!app.deleted_at : !app.deleted_at) &&
         (domainId === "all" || app.domain_id === domainId) &&
         created >= start &&
         created <= end
       );
     });
-  }, [apps, domainById, domainId, from, q, to]);
+  }, [apps, domainById, domainId, from, q, section, to]);
 
   const mutation = useMutation({
     mutationFn: async (payload: EditForm) => {
@@ -184,6 +196,32 @@ function Applicants() {
     },
     onError: (error) => toast.error(error instanceof Error ? error.message : "Update failed"),
   });
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) =>
+      (await postAdminJson<{ application: Pick<App, "id" | "deleted_at"> }>(
+        "/api/admin/application-delete",
+        { id },
+      )) ?? (await remove({ data: { id } })),
+    onSuccess: () => {
+      toast.success("Application moved to Deleted");
+      queryClient.invalidateQueries({ queryKey: ["apps"] });
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
+    },
+    onError: (error) => toast.error(error instanceof Error ? error.message : "Delete failed"),
+  });
+  const restoreMutation = useMutation({
+    mutationFn: async (id: string) =>
+      (await postAdminJson<{ application: Pick<App, "id" | "deleted_at"> }>(
+        "/api/admin/application-restore",
+        { id },
+      )) ?? (await restore({ data: { id } })),
+    onSuccess: () => {
+      toast.success("Application restored");
+      queryClient.invalidateQueries({ queryKey: ["apps"] });
+      queryClient.invalidateQueries({ queryKey: ["stats"] });
+    },
+    onError: (error) => toast.error(error instanceof Error ? error.message : "Restore failed"),
+  });
 
   function exportCsv() {
     const headers = [
@@ -201,6 +239,7 @@ function Applicants() {
       "Applied At",
       "Paid At",
       "Updated At",
+      "Deleted At",
     ];
     const lines = [
       headers.join(","),
@@ -220,6 +259,7 @@ function Applicants() {
           row.created_at,
           row.paid_at ?? "",
           row.updated_at,
+          row.deleted_at ?? "",
         ]
           .map((value) => `"${String(value).replace(/"/g, '""')}"`)
           .join(","),
@@ -240,10 +280,22 @@ function Applicants() {
         <div>
           <h1 className="font-display text-3xl font-bold">Applicants</h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            {rows.length} of {apps.length} record{apps.length !== 1 && "s"}
+            {rows.length} {section} record{rows.length !== 1 && "s"} shown
           </p>
         </div>
-        <div className="grid w-full gap-2 lg:w-auto lg:grid-cols-[180px_190px_145px_145px_auto]">
+        <div className="grid w-full gap-2 xl:w-auto xl:grid-cols-[140px_180px_190px_145px_145px_auto]">
+          <Select
+            value={section}
+            onValueChange={(value: "active" | "deleted") => setSection(value)}
+          >
+            <SelectTrigger className="border-white/10 bg-white/5">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="deleted">Deleted</SelectItem>
+            </SelectContent>
+          </Select>
           <Input
             value={q}
             onChange={(event) => setQ(event.target.value)}
@@ -295,9 +347,10 @@ function Applicants() {
                 "Mode",
                 "Status",
                 "Applied",
-                "Updated",
+                section === "deleted" ? "Deleted" : "Updated",
                 "Resume",
                 "Edit",
+                section === "deleted" ? "Restore" : "Delete",
               ].map((heading) => (
                 <th key={heading} className="px-4 py-3">
                   {heading}
@@ -308,7 +361,7 @@ function Applicants() {
           <tbody>
             {isLoading && (
               <tr>
-                <td className="px-4 py-6 text-muted-foreground" colSpan={10}>
+                <td className="px-4 py-6 text-muted-foreground" colSpan={11}>
                   Loading...
                 </td>
               </tr>
@@ -346,7 +399,9 @@ function Applicants() {
                   {formatDateTime(row.created_at)}
                 </td>
                 <td className="px-4 py-3 text-xs text-muted-foreground">
-                  {formatDateTime(row.updated_at)}
+                  {section === "deleted"
+                    ? formatDateTime(row.deleted_at)
+                    : formatDateTime(row.updated_at)}
                 </td>
                 <td className="px-4 py-3">
                   {row.resume_path ? (
@@ -369,20 +424,51 @@ function Applicants() {
                   )}
                 </td>
                 <td className="px-4 py-3">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="border-white/10"
-                    onClick={() => setEditing(toEditForm(row))}
-                  >
-                    <Pencil className="h-3.5 w-3.5" />
-                  </Button>
+                  {section === "active" ? (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-white/10"
+                      onClick={() => setEditing(toEditForm(row))}
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                  ) : (
+                    "-"
+                  )}
+                </td>
+                <td className="px-4 py-3">
+                  {section === "deleted" ? (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-white/10"
+                      disabled={restoreMutation.isPending}
+                      onClick={() => restoreMutation.mutate(row.id)}
+                    >
+                      <RotateCcw className="h-3.5 w-3.5" />
+                    </Button>
+                  ) : (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-white/10 text-red-300 hover:text-red-200"
+                      disabled={deleteMutation.isPending}
+                      onClick={() => {
+                        if (window.confirm("Move this application to Deleted?")) {
+                          deleteMutation.mutate(row.id);
+                        }
+                      }}
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  )}
                 </td>
               </tr>
             ))}
             {!isLoading && !rows.length && (
               <tr>
-                <td className="px-4 py-6 text-center text-muted-foreground" colSpan={10}>
+                <td className="px-4 py-6 text-center text-muted-foreground" colSpan={11}>
                   No applicants in this filter.
                 </td>
               </tr>
