@@ -25,7 +25,7 @@ const items = [
 
 export function About() {
   return (
-    <section className="relative py-20 md:py-28">
+    <section id="about" className="relative py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
         <div className="reveal mx-auto max-w-2xl text-center">
           <p className="text-sm font-semibold uppercase tracking-[0.2em] text-primary">

@@ -96,34 +96,17 @@ export function ApplyModal({
   const [loading, setLoading] = useState(false);
   const [domain, setDomain] = useState<string>(presetDomain || "web-dev");
   const [mode, setMode] = useState<"online" | "hybrid" | "offline">("online");
-  const [resume, setResume] = useState<File | null>(null);
   const selectedDomain = DOMAINS.find((item) => item.slug === domain) ?? DOMAINS[0];
 
   useEffect(() => {
     if (presetDomain) setDomain(presetDomain);
   }, [presetDomain]);
 
-  async function fileToBase64(f: File): Promise<string> {
-    return new Promise((res, rej) => {
-      const r = new FileReader();
-      r.onerror = () => rej(r.error);
-      r.onload = () => res(r.result as string);
-      r.readAsDataURL(f);
-    });
-  }
-
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     try {
       const fd = new FormData(e.currentTarget);
-      let resume_base64: string | undefined;
-      let resume_filename: string | undefined;
-      if (resume) {
-        if (resume.size > 5 * 1024 * 1024) throw new Error("Resume must be < 5MB");
-        resume_base64 = await fileToBase64(resume);
-        resume_filename = resume.name;
-      }
       const payload = {
         full_name: String(fd.get("full_name") || ""),
         email: String(fd.get("email") || ""),
@@ -136,8 +119,6 @@ export function ApplyModal({
         linkedin_url: String(fd.get("linkedin_url") || ""),
         github_url: String(fd.get("github_url") || ""),
         motivation: String(fd.get("motivation") || ""),
-        resume_base64,
-        resume_filename,
       };
       const order =
         (await postJson<CreateOrderResult>("/api/create-order", payload)) ??
@@ -244,16 +225,6 @@ export function ApplyModal({
             </div>
             <Field label="LinkedIn URL" name="linkedin_url" type="url" placeholder="https://" />
             <Field label="GitHub URL" name="github_url" type="url" placeholder="https://" />
-          </div>
-
-          <div>
-            <Label>Resume (PDF, max 5MB)</Label>
-            <Input
-              type="file"
-              accept=".pdf"
-              className="mt-1.5 bg-white/5"
-              onChange={(e) => setResume(e.target.files?.[0] || null)}
-            />
           </div>
 
           <div>

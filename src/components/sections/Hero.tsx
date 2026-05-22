@@ -38,19 +38,18 @@ export function Hero({ onApply }: { onApply: () => void }) {
 
         <div className="reveal mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Button
+            asChild
             size="lg"
-            onClick={onApply}
             className="group bg-gradient-primary px-7 text-primary-foreground shadow-glow hover:opacity-95"
           >
-            Apply Now
-            <ArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            <a href="#about">
+              About
+              <ArrowRight className="ml-1.5 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
+            </a>
           </Button>
-          <a
-            href="#programs"
-            className="rounded-md px-5 py-2.5 text-sm font-medium text-foreground/90 hover:text-foreground"
-          >
-            Explore programs →
-          </a>
+          <Button asChild size="lg" variant="secondary" className="px-7">
+            <a href="#programs">Explore programs →</a>
+          </Button>
         </div>
 
         <div className="reveal mt-14 flex flex-wrap justify-center gap-2.5">
