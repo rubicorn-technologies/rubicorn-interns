@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { BlurOrbs } from "./BlurOrbs";
+import { BlurOrbs } from "../BlurOrbs";
 import { ArrowRight, Sparkles } from "lucide-react";
 
 const domains = ["Web Development", "Python", "AI Engineer", "Prompt Engineer", "Data Science", "Cybersecurity"];
