@@ -100,7 +100,7 @@ export const Route = createFileRoute("/terms")({
         <p>
           Rubicorn may update these terms from time to time. Continued use or participation after
           changes means you accept the updated terms. Any dispute must first be raised by emailing
-          admin@rubicorn.in with full details and payment reference.
+          contact@rubicorn.in with full details and payment reference.
         </p>
       </div>
     </div>

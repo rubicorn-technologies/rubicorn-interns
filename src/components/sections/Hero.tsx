@@ -21,7 +21,7 @@ export function Hero({ onApply }: { onApply: () => void }) {
       <div className="relative mx-auto max-w-5xl px-5 text-center lg:px-8">
         <div className="reveal mx-auto inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-foreground/80 backdrop-blur">
           <Sparkles className="h-3.5 w-3.5 text-primary" />
-          AICTE Recognized · MSME Registered · India-wide Cohorts
+          MSME Registered · India-wide Cohorts
         </div>
 
         <h1 className="reveal mt-6 font-display text-4xl font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl">

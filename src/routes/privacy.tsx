@@ -78,7 +78,7 @@ export const Route = createFileRoute("/privacy")({
         <h2>Your Requests</h2>
         <p>
           You may request access, correction, or deletion of your information by emailing
-          admin@rubicorn.in. We may verify your identity before acting on a request and may preserve
+          contact@rubicorn.in. We may verify your identity before acting on a request and may preserve
           records where legally or operationally necessary.
         </p>
 

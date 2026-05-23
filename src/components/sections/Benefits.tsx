@@ -18,7 +18,7 @@ const benefits = [
   { icon: FileCheck, title: "Internship Certificate" },
   { icon: FileSignature, title: "Letter of Recommendation" },
   { icon: Wallet, title: "Performance-Based Stipend" },
-  { icon: ShieldCheck, title: "AICTE Recognition" },
+  { icon: ShieldCheck, title: "Industry recognition" },
   { icon: BadgeCheck, title: "MSME Registered" },
 ];
 

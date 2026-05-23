@@ -59,7 +59,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Apply for AICTE-recognized internships at Rubicorn Technologies. Online, Hybrid, Offline modes. Real projects, mentor support, LOR & certificates.",
+          "Apply for internships at Rubicorn Technologies. Online, Hybrid, Offline modes. Real projects, mentor support, LOR & certificates.",
       },
       {
         name: "keywords",
@@ -74,7 +74,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         property: "og:description",
         content:
-          "Apply for AICTE-recognized internships at Rubicorn Technologies. Online, Hybrid, Offline modes. Real projects, mentor support, LOR & certificates.",
+          "Apply for internships at Rubicorn Technologies. Online, Hybrid, Offline modes. Real projects, mentor support, LOR & certificates.",
       },
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Rubicorn Internships" },
@@ -86,7 +86,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "twitter:description",
         content:
-          "Apply for AICTE-recognized internships at Rubicorn Technologies. Online, Hybrid, Offline modes. Real projects, mentor support, LOR & certificates.",
+          "Apply for internships at Rubicorn Technologies. Online, Hybrid, Offline modes. Real projects, mentor support, LOR & certificates.",
       },
       {
         property: "og:image",
@@ -116,7 +116,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "@type": "EducationalOrganization",
           name: "Rubicorn Technologies Pvt. Ltd.",
           url: "https://intern.rubicorn.in",
-          email: "admin@rubicorn.in",
+          email: "contact@rubicorn.in",
           telephone: "+91-89789-43122",
         }),
       },

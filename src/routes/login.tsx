@@ -54,7 +54,7 @@ function Login() {
               type="email"
               required
               className="mt-1.5 bg-white/5"
-              defaultValue="admin@rubicorn.in"
+              defaultValue="contact@rubicorn.in"
             />
           </div>
           <div>

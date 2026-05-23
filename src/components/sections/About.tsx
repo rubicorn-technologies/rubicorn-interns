@@ -19,7 +19,7 @@ const items = [
   {
     icon: Shield,
     title: "Recognized & trusted",
-    text: "AICTE recognized · MSME registered · transparent training-based model.",
+    text: "MSME registered · transparent training-based model.",
   },
 ];
 

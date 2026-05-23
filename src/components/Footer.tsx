@@ -65,8 +65,8 @@ export function Footer() {
           <p className="font-display text-sm font-semibold">Contact</p>
           <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
             <li>
-              <a href="mailto:admin@rubicorn.in" className="hover:text-foreground">
-                admin@rubicorn.in
+              <a href="mailto:contact@rubicorn.in" className="hover:text-foreground">
+                contact@rubicorn.in
               </a>
             </li>
             <li>

@@ -18,7 +18,7 @@ export const Route = createFileRoute("/refund")({
 
         <h2>Refund Window</h2>
         <p>
-          A refund request may be considered only if it is emailed to admin@rubicorn.in within 7
+          A refund request may be considered only if it is emailed to contact@rubicorn.in within 7
           calendar days of payment and before the applicant has received substantial access to
           program materials, cohort communication, mentor support, recorded/live sessions,
           assignments, project review, or administrative processing. Once access or processing has
@@ -58,7 +58,7 @@ export const Route = createFileRoute("/refund")({
 
         <h2>How to Request</h2>
         <p>
-          Email admin@rubicorn.in with your full name, registered email, phone number, selected
+          Email contact@rubicorn.in with your full name, registered email, phone number, selected
           domain, payment ID, order ID, payment date, amount paid, reason for request, and any
           supporting proof. Incomplete requests may be rejected or delayed.
         </p>

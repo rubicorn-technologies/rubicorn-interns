@@ -21,7 +21,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Internship is free. Pay only for the industry training. AICTE-recognized, MSME-registered. Apply online today.",
+          "Internship is free. Pay only for the industry training. MSME-registered. Apply online today.",
       },
       { property: "og:url", content: "/" },
     ],

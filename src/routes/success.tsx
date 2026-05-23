@@ -60,7 +60,7 @@ function Success() {
             Back home
           </Link>
           <a
-            href="mailto:admin@rubicorn.in"
+            href="mailto:contact@rubicorn.in"
             className="rounded-lg bg-gradient-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-glow"
           >
             Contact support

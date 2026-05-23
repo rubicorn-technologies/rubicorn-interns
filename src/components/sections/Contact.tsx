@@ -16,10 +16,10 @@ export function Contact() {
 
           <div className="mt-8 space-y-3">
             <a
-              href="mailto:admin@rubicorn.in"
+              href="mailto:contact@rubicorn.in"
               className="glass hover-lift flex items-center gap-3 rounded-xl p-4 text-sm"
             >
-              <Mail className="h-4 w-4 text-primary" /> admin@rubicorn.in
+              <Mail className="h-4 w-4 text-primary" /> contact@rubicorn.in
             </a>
             <a
               href="tel:+918978943122"
@@ -47,7 +47,7 @@ export function Contact() {
           className="reveal glass rounded-2xl p-6"
           onSubmit={(e) => {
             e.preventDefault();
-            window.location.href = "mailto:admin@rubicorn.in";
+            window.location.href = "mailto:contact@rubicorn.in";
           }}
         >
           <div className="grid gap-4 sm:grid-cols-2">
